@@ -2,5 +2,5 @@ from . import views
 from django.urls import path
 
 urlpatterns = [
-    path('api/chords/', views.get_chords, name='chords'),
+    path('api/chords/', views.get_song_suggestions, name='song_suggestions'),
 ]
