@@ -5,6 +5,7 @@ from openai import OpenAI
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
+from django.contrib.auth.decorators import login_required
 
 @csrf_exempt
 def get_song_suggestions(request):
@@ -25,5 +26,9 @@ def get_song_suggestions(request):
         suggestion = response.choices[0].message.content
         return JsonResponse({'suggestions': suggestion})
 
+
+
+@login_required
 def index(request):
     return render(request, 'chords/index.html')
+
