@@ -1,53 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guitar Practice</title>
+    <title>Guitar Song Suggester</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 60px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 15px;
+            margin-bottom: 24px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: #555;
+        }
+
+        button {
+            width: 100%;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #e0e0e0;
+        }
+
+        #results {
+            margin-top: 40px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 24px;
+            font-size: 15px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: #888;
+            margin-top: 40px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-      <h1>Guitar Song Suggester</h1>
+    <div class="container">
+        <h1>Guitar Song Suggester</h1>
+        <p class="subtitle">Get personalized song recommendations based on your skill level and known chords.</p>
+
         <form id="suggestion-form">
-            <label>Skill Level:</label>
+            <label>Skill Level</label>
             <select id="skill_level">
                 <option value="beginner">Beginner</option>
                 <option value="intermediate">Intermediate</option>
                 <option value="advanced">Advanced</option>
-        </select>
-        <br><br>
-        <label>Chords you know (comma separated):</label>
-        <input type="text" id="known_chords" placeholder="e.g. C, G, Am">
-        <br><br>
-        <button type="submit">Get Song Suggestions</button>
-    </form>
+            </select>
 
-    <div id="results"></div>
-    
+            <label>Chords you know (comma separated)</label>
+            <input type="text" id="known_chords" placeholder="e.g. C, G, Am">
+
+            <button type="submit">Get Song Suggestions</button>
+        </form>
+
+        <div class="loading" id="loading">Finding songs for you...</div>
+        <div id="results"></div>
+    </div>
 
     <script>
-    document.getElementById('suggestion-form').addEventListener('submit', function(e) {
-        e.preventDefault()
+        document.getElementById('suggestion-form').addEventListener('submit', function(e) {
+            e.preventDefault()
 
-        const skill_level = document.getElementById('skill_level').value
-        const known_chords = document.getElementById('known_chords').value.split(', ')
+            const skill_level = document.getElementById('skill_level').value
+            const known_chords = document.getElementById('known_chords').value.split(', ')
 
-        fetch('/api/chords/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                skill_level: skill_level,
-                known_chords: known_chords
+            document.getElementById('loading').style.display = 'block'
+            document.getElementById('results').style.display = 'none'
+
+            fetch('/api/chords/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    skill_level: skill_level,
+                    known_chords: known_chords
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none'
+                document.getElementById('results').style.display = 'block'
+                document.getElementById('results').innerText = data.suggestions
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('results').innerText = data.suggestions
-        })
-    })
     </script>
 </body>
-
 </html>
