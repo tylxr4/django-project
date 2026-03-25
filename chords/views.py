@@ -45,3 +45,12 @@ def get_song_suggestions(request):
 def index(request):
     return render(request, 'chords/index.html')
 
+
+
+@login_required
+def history(request):
+    sessions = list(db['practice_history'].find(
+        {'user_id': request.user.id},
+        {'_id': 0}
+    ))
+    return render(request, 'chords/history.html', {'sessions': sessions})

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Practice History</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+        .container { width: 100%; max-width: 600px; margin: 0 auto; }
+        h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+        .subtitle { font-size: 14px; color: #888; margin-bottom: 40px; }
+        .session { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+        .session-date { font-size: 12px; color: #888; margin-bottom: 8px; }
+        .session-meta { font-size: 13px; color: #aaa; margin-bottom: 12px; }
+        .session-suggestions { font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
+        .back-link { display: inline-block; margin-bottom: 30px; color: #888; text-decoration: none; font-size: 14px; }
+        .back-link:hover { color: #fff; }
+        .empty { color: #888; font-size: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to app</a>
+        <h1>Practice History</h1>
+        <p class="subtitle">Your past song suggestions.</p>
+
+        {% if sessions %}
+            {% for session in sessions %}
+            <div class="session">
+                <div class="session-date">{{ session.date }}</div>
+                <div class="session-meta">Skill level: {{ session.skill_level }} | Chords: {{ session.known_chords|join:", " }}</div>
+                <div class="session-suggestions">{{ session.suggestions }}</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">No practice sessions yet. Go get some suggestions!</p>
+        {% endif %}
+    </div>
+</body>
+</html>
