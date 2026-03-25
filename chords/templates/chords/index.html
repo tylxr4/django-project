@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Practice</title>
+
+</head>
+<body>
+      <h1>Guitar Song Suggester</h1>
+        <form id="suggestion-form">
+            <label>Skill Level:</label>
+            <select id="skill_level">
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+        </select>
+        <br><br>
+        <label>Chords you know (comma separated):</label>
+        <input type="text" id="known_chords" placeholder="e.g. C, G, Am">
+        <br><br>
+        <button type="submit">Get Song Suggestions</button>
+    </form>
+
+    <div id="results"></div>
+    
+
+    <script>
+    document.getElementById('suggestion-form').addEventListener('submit', function(e) {
+        e.preventDefault()
+
+        const skill_level = document.getElementById('skill_level').value
+        const known_chords = document.getElementById('known_chords').value.split(', ')
+
+        fetch('/api/chords/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                skill_level: skill_level,
+                known_chords: known_chords
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('results').innerText = data.suggestions
+        })
+    })
+    </script>
+</body>
+
+</html>

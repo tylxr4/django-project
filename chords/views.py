@@ -22,3 +22,6 @@ def get_song_suggestions(request):
         )
         suggestion = response.choices[0].message.content
         return JsonResponse({'suggestions': suggestion})
+
+def index(request):
+    return render(request, 'chords/index.html')
