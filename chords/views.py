@@ -6,6 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 from django.contrib.auth.decorators import login_required
+from datetime import datetime
+
 
 @csrf_exempt
 def get_song_suggestions(request):
@@ -24,7 +26,18 @@ def get_song_suggestions(request):
             ]
         )
         suggestion = response.choices[0].message.content
+        db['practice_history'].insert_one({
+            'user_id': request.user.id,
+            'username': request.user.username,
+            'date': datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'skill_level': skill_level,
+            'known_chords': known_chords,
+            'suggestions': suggestion
+        })
+
         return JsonResponse({'suggestions': suggestion})
+    
+      
 
 
 
